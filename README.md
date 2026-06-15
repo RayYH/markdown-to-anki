@@ -15,31 +15,30 @@ Requires Python 3.10+ and [AnkiConnect](https://foosoft.net/projects/anki-connec
 Open Anki, then run once to register note models and do the first import:
 
 ```shell
-m2a --folder ~/notes/anki init all
+m2a --folder ~/notes/anki init
 ```
 
-From then on, use `anki sync` for day-to-day updates — it re-imports changed files and pushes everything to AnkiWeb:
+From then on, use `sync` for day-to-day updates — it re-imports changed files and pushes everything to AnkiWeb:
 
 ```shell
-m2a --folder ~/notes/anki anki sync
+m2a --folder ~/notes/anki sync
 ```
 
 ## Commands
 
-| Command             | Description                                                                          |
-| ------------------- | ------------------------------------------------------------------------------------ |
-| `m2a init all`      | Register note models, import media and notes. Use for first-time setup.              |
-| `m2a anki check`    | Verify the AnkiConnect server is reachable.                                          |
-| `m2a anki init`     | Register note models only (no import).                                               |
-| `m2a anki sync`     | Import media and notes, then trigger an AnkiWeb sync.                                |
-| `m2a anki sync_web` | Trigger an AnkiWeb sync only (no re-import). Useful for cron.                        |
+| Command         | Description                                                    |
+| --------------- | -------------------------------------------------------------- |
+| `m2a check`     | Verify the AnkiConnect server is reachable.                    |
+| `m2a init`      | Register note models, import media and notes. Use for first-time setup. |
+| `m2a sync`      | Import media and notes, then trigger an AnkiWeb sync.          |
+| `m2a sync_web`  | Trigger an AnkiWeb sync only (no re-import). Useful for cron.  |
 
 Only files modified within the last `TIME_RANGE` seconds (default 2 hours) are processed.
 
 > **Force a full sync** — to re-sync all notes regardless of modification time, touch every Markdown file first:
 > ```shell
 > find ~/notes/anki -name "*.md" -exec touch {} +
-> m2a --folder ~/notes/anki anki sync
+> m2a --folder ~/notes/anki sync
 > ```
 
 ## Configuration
@@ -53,8 +52,8 @@ CLI flag  >  environment variable / .env  >  config file  >  default
 ### CLI flags
 
 ```shell
-m2a --folder ~/notes/anki --url http://localhost:8765 anki sync
-m2a --resources ~/my-templates init all
+m2a --folder ~/notes/anki --url http://localhost:8765 sync
+m2a --resources ~/my-templates init
 ```
 
 | Flag          | Description                                    | Default                 |
@@ -121,12 +120,12 @@ Per-card tags via `<!--TAGS: a, b-->` (anywhere inside a card section) are merge
 
 ### Built-in note types
 
-| Model              | Fields                  | Description                          |
-| ------------------ | ----------------------- | ------------------------------------ |
-| `m2a-basic`        | Front, Back             | Simple front → back card             |
-| `m2a-basic-reverse`| Front, Back             | Front → back and back → front        |
-| `m2a-cloze`        | Text, Extra             | Cloze deletion card                  |
-| `m2a-english`      | Word, Audio, Meaning    | Vocabulary card with audio support   |
+| Model               | Fields               | Description                        |
+| ------------------- | -------------------- | ---------------------------------- |
+| `m2a-basic`         | Front, Back          | Simple front → back card           |
+| `m2a-basic-reverse` | Front, Back          | Front → back and back → front      |
+| `m2a-cloze`         | Text, Extra          | Cloze deletion card                |
+| `m2a-english`       | Word, Audio, Meaning | Vocabulary card with audio support |
 
 ### Cloze cards
 
@@ -243,7 +242,7 @@ A common English greeting.
 "Hello, how are you?" — used when meeting someone.
 ```
 
-Run `m2a --resources my-resources/ init all` to register your models in Anki before syncing notes.
+Run `m2a --resources my-resources/ init` to register your models in Anki before syncing notes.
 
 ## Limitation
 
@@ -258,7 +257,7 @@ Automatically sync your notes to AnkiWeb hourly:
 crontab -e
 
 # sync hourly (replace /usr/local/bin/m2a with the output of: which m2a)
-5 * * * *  /usr/local/bin/m2a --folder ~/notes/anki anki sync_web &>/dev/null
+5 * * * *  /usr/local/bin/m2a --folder ~/notes/anki sync_web &>/dev/null
 ```
 
 ## Examples
