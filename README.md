@@ -26,13 +26,13 @@ m2a --folder ~/notes/anki anki sync
 
 ## Commands
 
-| Command                | Description                                                    |
-| ---------------------- | -------------------------------------------------------------- |
-| `m2a init all`         | Create/update Anki note models, then import media and notes.   |
-| `m2a anki check`       | Verify the AnkiConnect server is reachable.                    |
-| `m2a anki init`        | Create/update Anki note models only.                           |
-| `m2a anki sync`        | Import media and notes, then trigger an AnkiWeb sync.          |
-| `m2a anki sync_web`    | Trigger an AnkiWeb sync only (no re-import). Useful for cron.  |
+| Command             | Description                                                   |
+| ------------------- | ------------------------------------------------------------- |
+| `m2a init all`      | Create/update Anki note models, then import media and notes.  |
+| `m2a anki check`    | Verify the AnkiConnect server is reachable.                   |
+| `m2a anki init`     | Create/update Anki note models only.                          |
+| `m2a anki sync`     | Import media and notes, then trigger an AnkiWeb sync.         |
+| `m2a anki sync_web` | Trigger an AnkiWeb sync only (no re-import). Useful for cron. |
 
 Only files modified within the last `TIME_RANGE` seconds (default 2 hours) are processed.
 
@@ -78,6 +78,78 @@ TIME_RANGE=7200
 ANKI_URL=http://localhost:8765
 M2A_RESOURCES_DIR=~/notes/anki-templates
 ```
+
+## Markdown Style
+
+Each Markdown file may contain one or more cards. Use YAML frontmatter for per-file metadata and the comment separators below to split cards and fields:
+
+```markdown
+---
+deck: M2A::Example::Math
+tags: math, theorem
+model: m2a-basic
+# skip: 1   # uncomment to skip this file
+---
+
+<!--CARD-->
+
+### Front of card 1
+
+<!--FIELD-->
+
+Back of card 1
+
+<!--CARD-->
+<!--TAGS: hard, exam-->
+
+### Front of card 2
+
+<!--FIELD-->
+
+Back of card 2
+```
+
+Supported metadata keys: `deck`, `tags`, `model`, `skip`.
+
+Per-card tags via `<!--TAGS: a, b-->` (anywhere inside a card section) are merged with the file-level `tags` from frontmatter.
+
+### Built-in note types
+
+| Model              | Fields                  | Description                          |
+| ------------------ | ----------------------- | ------------------------------------ |
+| `m2a-basic`        | Front, Back             | Simple front → back card             |
+| `m2a-basic-reverse`| Front, Back             | Front → back and back → front        |
+| `m2a-cloze`        | Text, Extra             | Cloze deletion card                  |
+| `m2a-english`      | Word, Audio, Meaning    | Vocabulary card with audio support   |
+
+### Cloze cards
+
+Use Anki's native `{{c1::...}}` syntax in the `Text` field. Multiple deletions (`c1`, `c2`, …) are supported in a single card.
+
+```markdown
+---
+deck: M2A::Example::Cloze
+model: m2a-cloze
+---
+
+<!--CARD-->
+
+The capital of {{c1::France}} is {{c2::Paris}}.
+
+<!--FIELD-->
+
+European geography.
+
+<!--CARD-->
+
+{{c1::Water}} boils at {{c2::100}}°C at standard pressure.
+
+<!--FIELD-->
+
+Basic chemistry fact.
+```
+
+The `Text` field holds the cloze content; `Extra` is shown on the back and can hold supplementary notes.
 
 ## Custom Resources
 
@@ -167,42 +239,25 @@ A common English greeting.
 
 Run `m2a --resources my-resources/ init all` to register your models in Anki before syncing notes.
 
-## Markdown Style
+## Limitation
 
-Each Markdown file may contain one or more cards. Use YAML frontmatter for per-file metadata and the comment separators below to split cards and fields:
+- DO NOT use dark theme in Anki — the rendered Markdown style does not support it.
+- Attachments (images, audio) must be placed in the same directory as the Markdown file, or a subdirectory of it.
 
-```markdown
----
-deck: M2A::Example::Math
-tags: math, theorem
-model: m2a-basic
-# skip: 1   # uncomment to skip this file
----
+## Cronjob
 
-<!--CARD-->
+Automatically sync your notes to AnkiWeb hourly:
 
-### Front of card 1
+```shell
+crontab -e
 
-<!--FIELD-->
-
-Back of card 1
-
-<!--CARD-->
-<!--TAGS: hard, exam-->
-
-### Front of card 2
-
-<!--FIELD-->
-
-Back of card 2
+# sync hourly (replace /usr/local/bin/m2a with the output of: which m2a)
+5 * * * *  /usr/local/bin/m2a --folder ~/notes/anki anki sync_web &>/dev/null
 ```
 
-Supported metadata keys: `deck`, `tags`, `model` (one of `m2a-basic`, `m2a-basic-reverse`, `m2a-english`), `skip`.
+## Examples
 
-Per-card tags via `<!--TAGS: a, b-->` (anywhere inside a card section) are merged with the file-level `tags` from frontmatter.
-
-See the [example notes](https://github.com/rayyh/markdown-to-anki/tree/main/storage/example) for more details.
-
+See the [example notes](https://github.com/rayyh/markdown-to-anki/tree/main/tests/fixtures) for working Markdown files covering basic cards, cloze deletions, math, code, and audio.
 
 ## License
 
