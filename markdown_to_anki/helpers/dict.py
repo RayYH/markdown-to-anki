@@ -1,11 +1,11 @@
 from typing import Any
 
 
-def safe_get(d: dict, k: str, default_val: Any = None) -> Any:
-    if not d:
+def safe_get(d: Any, k: str, default_val: Any = None) -> Any:
+    if not isinstance(d, dict):
         return default_val
 
-    if d.get(k):
+    if k in d:
         return d[k]
 
     keys = k.split(sep=".", maxsplit=1)

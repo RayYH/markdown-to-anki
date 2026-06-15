@@ -28,18 +28,22 @@ from markdown_to_anki.services.render import (
 )
 
 
-def clean_notes(md_folder: str = None):
+def _make_api(anki_url: str | None) -> AnkiApi:
+    return AnkiApi(anki_uri=anki_url) if anki_url else AnkiApi()
+
+
+def clean_notes(md_folder: str | None = None, anki_url: str | None = None):
     folder = md_folder or MD_FOLDER
-    anki_api = AnkiApi()
+    anki_api = _make_api(anki_url)
     ids = get_all_anki_ids(folder)
     clear_all_anki_ids(folder)
     anki_api.delete_notes(notes=ids)
     return True
 
 
-def import_notes(md_folder: str = None):
+def import_notes(md_folder: str | None = None, anki_url: str | None = None):
     folder = md_folder or MD_FOLDER
-    anki_api = AnkiApi()
+    anki_api = _make_api(anki_url)
     deck_names = anki_api.deck_names()
     updated_count = 0
     created_count = 0
@@ -71,27 +75,20 @@ def import_notes(md_folder: str = None):
                     if metadata.get("model")
                     else DEFAULT_MODEL
                 )
+                md = model_definition(mn)
+                in_fields = (md.get("inOrderFields") if md else None) or []
                 parts = split_multi_parts(content)
-                idx = 1
-                for card_tags, part in parts:
-                    md = model_definition(mn)
-                    in_fields = (
-                        md.get("inOrderFields")
-                        if md.get("inOrderFields")
-                        else []
-                    )
-                    fields = {}
-                    part_i = 0
-                    for f in in_fields:
-                        fields[f] = markdown_to_html(
-                            part[part_i] if part_i < len(part) else "",
+                for idx, (card_tags, part) in enumerate(parts, start=1):
+                    fields = {
+                        f: markdown_to_html(
+                            part[i] if i < len(part) else "",
                             base_path=fullpath,
                         )
-                        part_i += 1
+                        for i, f in enumerate(in_fields)
+                    }
                     merged_tags = list(dict.fromkeys(tags + card_tags))
                     anki_id = get_anki_id(fullpath, idx)
                     if anki_id is not None:
-                        updated_count += 1
                         try:
                             anki_api.notes_info([anki_id])
                         except Exception as e:
@@ -105,8 +102,8 @@ def import_notes(md_folder: str = None):
                         if old_deck_name != dn:
                             anki_api.change_deck(cards=[anki_id], deck=dn)
                         anki_api.update_note_fields(anki_id, fields=fields)
+                        updated_count += 1
                     else:
-                        created_count += 1
                         anki_id = anki_api.add_note(
                             deck_name=dn,
                             model_name=mn,
@@ -114,52 +111,32 @@ def import_notes(md_folder: str = None):
                             tags=merged_tags,
                         )
                         set_anki_id(fullpath, idx, anki_id)
-                    idx += 1
+                        created_count += 1
     return {"notes created": created_count, "notes updated": updated_count}
 
 
-def import_medias(md_folder: str = None):
+MEDIA_EXTENSIONS = {
+    ".png", ".jpg", ".jpeg", ".gif", ".webp",
+    ".mp3", ".ogg", ".wav", ".m4a", ".aac", ".flac", ".opus",
+    ".mp4", ".mov", ".mkv", ".webm",
+}
+
+
+def import_medias(md_folder: str | None = None, anki_url: str | None = None):
     folder = md_folder or MD_FOLDER
-    allow_extensions = [
-        ".png",
-        ".jpg",
-        ".jpeg",
-        ".gif",
-        ".webp",
-        ".mp3",
-        ".ogg",
-        ".wav",
-        ".m4a",
-        ".aac",
-        ".flac",
-        ".opus",
-        ".mp4",
-        ".mov",
-        ".mkv",
-        ".webm",
-    ]
-    anki_api = AnkiApi()
+    anki_api = _make_api(anki_url)
     created_count = 0
     for root, dirs, files in os.walk(folder):
+        # ".trash" must match a directory segment, not a substring.
+        dirs[:] = [d for d in dirs if d != ".trash"]
         for file in files:
-            for ext in allow_extensions:
-                if file.endswith(ext):
-                    fullpath = os.path.join(root, file)
-                    if ".trash" in fullpath:
-                        continue
-                    if not os.path.isabs(fullpath):
-                        fullpath = os.path.abspath(fullpath)
-                    dirname = os.path.dirname(fullpath)
-                    # TODO: this is a hack, need to fix
-                    filename = (
-                        fullpath.replace(dirname, "")
-                        .strip("/")
-                        .replace("/", " ")
-                    )
-                    anki_api.store_media_file_from_path(
-                        filename=filename, path=fullpath
-                    )
-                    created_count += 1
+            if os.path.splitext(file)[1].lower() not in MEDIA_EXTENSIONS:
+                continue
+            fullpath = os.path.abspath(os.path.join(root, file))
+            anki_api.store_media_file_from_path(
+                filename=os.path.basename(fullpath), path=fullpath
+            )
+            created_count += 1
     return {"media files created": created_count}
 
 
@@ -256,7 +233,10 @@ def _load_user_models() -> Dict:
         return {}
     resources_dir = models_dir.parent
     models = {}
-    for yaml_file in sorted(models_dir.glob("*.yaml")):
+    yaml_files = sorted(
+        list(models_dir.glob("*.yaml")) + list(models_dir.glob("*.yml"))
+    )
+    for yaml_file in yaml_files:
         with open(yaml_file) as f:
             data = yaml.safe_load(f)
         if not data or "name" not in data or "fields" not in data:
@@ -292,14 +272,15 @@ def _load_user_models() -> Dict:
 
 def _get_user_models() -> Dict:
     global _user_models_cache, _user_models_cache_dir
-    from markdown_to_anki.helpers.path import _resources_override
+    from markdown_to_anki.helpers.path import get_resources_dir
 
+    current_dir = get_resources_dir()
     if (
         _user_models_cache is None
-        or _user_models_cache_dir != _resources_override
+        or _user_models_cache_dir != current_dir
     ):
         _user_models_cache = _load_user_models()
-        _user_models_cache_dir = _resources_override
+        _user_models_cache_dir = current_dir
     return _user_models_cache
 
 
@@ -319,9 +300,9 @@ def model_definition(model: str):
     return None
 
 
-def ensure_models():
+def ensure_models(anki_url: str | None = None):
     updated, created = 0, 0
-    anki_api = AnkiApi()
+    anki_api = _make_api(anki_url)
     builtins = {
         m["modelName"]: m
         for m in [
@@ -333,10 +314,10 @@ def ensure_models():
     }
     # User-defined models override built-ins by name; new names are added.
     all_models = {**builtins, **_get_user_models()}
+    existing_models = set(anki_api.model_names())
     for model in all_models.values():
-        model_names = anki_api.model_names()
         model_name = model.get("modelName")
-        if model_name in model_names:
+        if model_name in existing_models:
             if model.get("css"):
                 anki_api.update_model_styling(
                     name=model_name, css=model.get("css")

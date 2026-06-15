@@ -91,7 +91,9 @@ class AnkiApi:
 
     def card_deck_name(self, card_id: int):
         cards = self.card_info(cards=[card_id])
-        return cards[0]["deckName"] if cards[0] else ""
+        if not cards or not cards[0]:
+            return ""
+        return cards[0].get("deckName", "")
 
     def model_info(self, model_name: str):
         result = {
@@ -168,7 +170,9 @@ class AnkiApi:
 
     def note_tags(self, note_id: int):
         r = self.notes_info([note_id])
-        return r[0].get("tags") if r[0].get("tags") else []
+        if not r or not r[0]:
+            return []
+        return r[0].get("tags") or []
 
     def delete_notes(self, notes: List[int]):
         return self.invoke_action("deleteNotes", notes=notes)

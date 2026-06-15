@@ -1,6 +1,4 @@
-import datetime
 import os.path
-import time
 
 
 def file_get_contents(filepath: str) -> str:
@@ -8,7 +6,5 @@ def file_get_contents(filepath: str) -> str:
         return f.read()
 
 
-def last_modified_time(filepath: str):
-    return datetime.datetime.strptime(
-        time.ctime(os.path.getmtime(filepath)), "%a %b %d %H:%M:%S %Y"
-    ).timestamp()
+def last_modified_time(filepath: str) -> float:
+    return os.path.getmtime(filepath)

@@ -10,6 +10,10 @@ def set_resources_dir(path: str | None) -> None:
     _resources_override = Path(path).expanduser().resolve() if path else None
 
 
+def get_resources_dir() -> Path | None:
+    return _resources_override
+
+
 def ensure_dir(filename: str):
     os.makedirs(os.path.dirname(filename), exist_ok=True)
 
