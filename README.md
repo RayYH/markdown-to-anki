@@ -36,6 +36,12 @@ m2a --folder ~/notes/anki anki sync
 
 Only files modified within the last `TIME_RANGE` seconds (default 2 hours) are processed.
 
+> **Force a full sync** — to re-sync all notes regardless of modification time, touch every Markdown file first:
+> ```shell
+> find ~/notes/anki -name "*.md" -exec touch {} +
+> m2a --folder ~/notes/anki anki sync
+> ```
+
 ## Configuration
 
 Settings are resolved in this order — highest priority wins:
