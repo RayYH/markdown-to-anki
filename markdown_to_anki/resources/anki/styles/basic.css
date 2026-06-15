@@ -1,0 +1,412 @@
+:root {
+    --bg: #1e1e1e;
+    --fg: #d4d4d4;
+    --fg-muted: #a8a8a8;
+
+    --heading: #ffffff;
+    --border: #3a3a3a;
+
+    --code-bg: #2a2a2a;
+    --inline-code-bg: #333322;
+    --inline-code-border: #b58900;
+
+    --link: #8ab4f8;
+    --em: #ffb86c;
+
+    --table-border: #444444;
+
+    --highlight-bg: #3a351f;
+    --error: #ff6b6b;
+    --inserted: #8be28b;
+    --deleted: #ff7b7b;
+
+    --keyword: #7ee787;
+    --string: #ff9b9b;
+    --number: #c9d1d9;
+    --comment: #7aa6a6;
+    --function: #79c0ff;
+    --class: #8ab4f8;
+    --constant: #ffa657;
+    --operator: #c9d1d9;
+    --variable: #d2a8ff;
+}
+
+body {
+    line-height: 1.6;
+    font-size: 16px;
+    color: var(--fg);
+    background-color: var(--bg);
+    padding: 1em;
+    margin: auto;
+    max-width: 42em;
+    word-break: break-word;
+    overflow-wrap: break-word;
+}
+
+.card {
+    font-family: Avenir Next, "LXGW WenKai", Arial, serif, sans-serif;
+    color: var(--fg);
+    background-color: var(--bg);
+}
+
+li {
+    color: var(--fg);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    color: var(--heading);
+    border: 0 none !important;
+}
+
+h1 {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+}
+
+h2 {
+    margin-top: 1em;
+    margin-bottom: 0.5em;
+}
+
+a {
+    color: var(--link);
+    text-decoration: underline;
+}
+
+ul,
+ol {
+    padding-left: 30px;
+}
+
+li {
+    margin: 0.2em 0 0 0;
+    padding: 0;
+}
+
+em {
+    color: var(--em);
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 0.5em auto;
+    border-radius: 3px;
+}
+
+blockquote {
+    border-left: 3px solid var(--link);
+    margin: 0.8em 0;
+    padding: 0.4em 0.8em;
+    color: var(--fg-muted);
+    background-color: rgba(138, 180, 248, 0.06);
+    border-radius: 0 3px 3px 0;
+}
+
+blockquote p {
+    margin: 0.2em 0;
+}
+
+hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 1.2em 0;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 0.8em 0;
+    font-size: 0.95em;
+}
+
+table th,
+table td {
+    border: 1px solid var(--table-border);
+    padding: 6px 10px;
+    text-align: left;
+    vertical-align: top;
+}
+
+table th {
+    background-color: var(--code-bg);
+    color: var(--heading);
+    font-weight: 600;
+}
+
+table tr:nth-child(even) td {
+    background-color: rgba(255, 255, 255, 0.03);
+}
+
+/* Legacy selector kept for compatibility */
+table.text th,
+table.text td {
+    vertical-align: top;
+    border-top: 1px solid var(--table-border);
+    padding: 5px;
+}
+
+pre {
+    background-color: var(--code-bg);
+    color: var(--fg);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 0.6em 0.8em;
+    line-height: 1.5;
+    font-family: "Source Code Pro", "Cascadia Code", Monaco, ui-monospace;
+    font-size: 0.9em;
+}
+
+pre code {
+    background-color: inherit;
+    color: inherit;
+    border: none;
+    padding: 0;
+}
+
+code {
+    background-color: var(--inline-code-bg);
+    color: var(--fg);
+    border: 1px solid var(--inline-code-border);
+    border-radius: 3px;
+    padding: 0 0.2em;
+}
+
+td.linenos .normal,
+span.linenos {
+    color: var(--fg-muted);
+    background-color: transparent;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+td.linenos .special,
+span.linenos.special {
+    color: var(--fg);
+    background-color: var(--highlight-bg);
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+/* Pygments / codehilite dark theme */
+
+.codehilite {
+    background: var(--code-bg);
+    color: var(--fg);
+}
+
+.codehilite .hll {
+    background-color: var(--highlight-bg);
+}
+
+.codehilite .c,
+.codehilite .ch,
+.codehilite .cm,
+.codehilite .cpf,
+.codehilite .c1,
+.codehilite .cs {
+    color: var(--comment);
+    font-style: italic;
+}
+
+/* Error */
+.codehilite .err {
+    color: var(--error);
+    border: 1px solid var(--error);
+}
+
+/* Keywords */
+.codehilite .k,
+.codehilite .kc,
+.codehilite .kd,
+.codehilite .kn,
+.codehilite .kr {
+    color: var(--keyword);
+    font-weight: bold;
+}
+
+.codehilite .kp {
+    color: var(--keyword);
+}
+
+.codehilite .kt {
+    color: #ff7b72;
+}
+
+/* Operators */
+.codehilite .o,
+.codehilite .ow {
+    color: var(--operator);
+}
+
+.codehilite .ow {
+    font-weight: bold;
+}
+
+/* Preprocessor */
+.codehilite .cp {
+    color: var(--constant);
+}
+
+/* Generic */
+.codehilite .gd {
+    color: var(--deleted);
+}
+
+.codehilite .ge {
+    font-style: italic;
+}
+
+.codehilite .gr {
+    color: var(--error);
+}
+
+.codehilite .gh,
+.codehilite .gp {
+    color: var(--heading);
+    font-weight: bold;
+}
+
+.codehilite .gi {
+    color: var(--inserted);
+}
+
+.codehilite .go {
+    color: var(--fg-muted);
+}
+
+.codehilite .gs {
+    font-weight: bold;
+}
+
+.codehilite .gu {
+    color: #d2a8ff;
+    font-weight: bold;
+}
+
+.codehilite .gt {
+    color: #79c0ff;
+}
+
+/* Numbers */
+.codehilite .m,
+.codehilite .mb,
+.codehilite .mf,
+.codehilite .mh,
+.codehilite .mi,
+.codehilite .mo,
+.codehilite .il {
+    color: var(--number);
+}
+
+/* Strings */
+.codehilite .s,
+.codehilite .sa,
+.codehilite .sb,
+.codehilite .sc,
+.codehilite .dl,
+.codehilite .s2,
+.codehilite .sh,
+.codehilite .s1 {
+    color: var(--string);
+}
+
+.codehilite .sd {
+    color: var(--string);
+    font-style: italic;
+}
+
+.codehilite .se {
+    color: var(--constant);
+    font-weight: bold;
+}
+
+.codehilite .si {
+    color: #d2a8ff;
+    font-weight: bold;
+}
+
+.codehilite .sx {
+    color: var(--keyword);
+}
+
+.codehilite .sr {
+    color: #d2a8ff;
+}
+
+.codehilite .ss {
+    color: var(--variable);
+}
+
+/* Names */
+.codehilite .na {
+    color: #b5cea8;
+}
+
+.codehilite .nb,
+.codehilite .bp {
+    color: var(--keyword);
+}
+
+.codehilite .nc {
+    color: var(--class);
+    font-weight: bold;
+}
+
+.codehilite .no {
+    color: var(--constant);
+}
+
+.codehilite .nd {
+    color: #d2a8ff;
+}
+
+.codehilite .ni {
+    color: var(--fg-muted);
+    font-weight: bold;
+}
+
+.codehilite .ne {
+    color: #ff7b72;
+    font-weight: bold;
+}
+
+.codehilite .nf,
+.codehilite .fm {
+    color: var(--function);
+}
+
+.codehilite .nl {
+    color: #dcdcaa;
+}
+
+.codehilite .nn {
+    color: var(--class);
+    font-weight: bold;
+}
+
+.codehilite .nt {
+    color: var(--keyword);
+    font-weight: bold;
+}
+
+.codehilite .nv,
+.codehilite .vc,
+.codehilite .vg,
+.codehilite .vi,
+.codehilite .vm {
+    color: var(--variable);
+}
+
+/* Whitespace */
+.codehilite .w {
+    color: #666666;
+}
