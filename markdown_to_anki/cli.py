@@ -50,13 +50,9 @@ def check(ctx):
 @cli.command("init")
 @click.pass_context
 def init(ctx):
-    """Register note models, import media and notes. Use for first-time setup."""
-    md_folder = ctx.obj.get("MD_FOLDER") if ctx.obj else None
+    """Register note models in Anki. Run once before your first sync."""
     click.echo(ensure_models())
-    click.echo("import medias")
-    click.echo(import_medias(md_folder=md_folder))
-    click.echo("import notes")
-    click.echo(import_notes(md_folder=md_folder))
+    click.echo("done.")
 
 
 @cli.command("sync")

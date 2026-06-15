@@ -12,13 +12,13 @@ Requires Python 3.10+ and [AnkiConnect](https://foosoft.net/projects/anki-connec
 
 ## Getting Started
 
-Open Anki, then run once to register note models and do the first import:
+Open Anki, then register note models once:
 
 ```shell
 m2a --folder ~/notes/anki init
 ```
 
-From then on, use `sync` for day-to-day updates — it re-imports changed files and pushes everything to AnkiWeb:
+Then sync your notes anytime:
 
 ```shell
 m2a --folder ~/notes/anki sync
@@ -29,7 +29,7 @@ m2a --folder ~/notes/anki sync
 | Command         | Description                                                    |
 | --------------- | -------------------------------------------------------------- |
 | `m2a check`     | Verify the AnkiConnect server is reachable.                    |
-| `m2a init`      | Register note models, import media and notes. Use for first-time setup. |
+| `m2a init`      | Register note models in Anki. Run once before your first sync.          |
 | `m2a sync`      | Import media and notes, then trigger an AnkiWeb sync.          |
 | `m2a sync_web`  | Trigger an AnkiWeb sync only (no re-import). Useful for cron.  |
 
@@ -242,7 +242,7 @@ A common English greeting.
 "Hello, how are you?" — used when meeting someone.
 ```
 
-Run `m2a --resources my-resources/ init` to register your models in Anki before syncing notes.
+Run `m2a --resources my-resources/ init` once to register your custom models in Anki, then use `m2a --resources my-resources/ sync` as usual.
 
 ## Limitation
 
