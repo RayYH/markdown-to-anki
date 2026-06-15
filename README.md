@@ -12,13 +12,13 @@ Requires Python 3.10+ and [AnkiConnect](https://foosoft.net/projects/anki-connec
 
 ## Getting Started
 
-Open Anki, then run:
+Open Anki, then run once to register note models and do the first import:
 
 ```shell
 m2a --folder ~/notes/anki init all
 ```
 
-This creates the note models and imports your media and notes. After that, sync anytime with:
+From then on, use `anki sync` for day-to-day updates — it re-imports changed files and pushes everything to AnkiWeb:
 
 ```shell
 m2a --folder ~/notes/anki anki sync
@@ -26,13 +26,13 @@ m2a --folder ~/notes/anki anki sync
 
 ## Commands
 
-| Command             | Description                                                   |
-| ------------------- | ------------------------------------------------------------- |
-| `m2a init all`      | Create/update Anki note models, then import media and notes.  |
-| `m2a anki check`    | Verify the AnkiConnect server is reachable.                   |
-| `m2a anki init`     | Create/update Anki note models only.                          |
-| `m2a anki sync`     | Import media and notes, then trigger an AnkiWeb sync.         |
-| `m2a anki sync_web` | Trigger an AnkiWeb sync only (no re-import). Useful for cron. |
+| Command             | Description                                                                          |
+| ------------------- | ------------------------------------------------------------------------------------ |
+| `m2a init all`      | Register note models, import media and notes. Use for first-time setup.              |
+| `m2a anki check`    | Verify the AnkiConnect server is reachable.                                          |
+| `m2a anki init`     | Register note models only (no import).                                               |
+| `m2a anki sync`     | Import media and notes, then trigger an AnkiWeb sync.                                |
+| `m2a anki sync_web` | Trigger an AnkiWeb sync only (no re-import). Useful for cron.                        |
 
 Only files modified within the last `TIME_RANGE` seconds (default 2 hours) are processed.
 
