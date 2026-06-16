@@ -30,16 +30,17 @@ m2a --folder ~/notes/anki sync
 
 ## Commands
 
-| Command         | Description                                                    |
-| --------------- | -------------------------------------------------------------- |
-| `m2a check`     | Verify the AnkiConnect server is reachable.                    |
-| `m2a init`      | Register note models in Anki. Run once before your first sync.          |
-| `m2a sync`      | Import media and notes, then trigger an AnkiWeb sync.          |
-| `m2a sync_web`  | Trigger an AnkiWeb sync only (no re-import). Useful for cron.  |
+| Command        | Description                                                    |
+| -------------- | -------------------------------------------------------------- |
+| `m2a check`    | Verify the AnkiConnect server is reachable.                    |
+| `m2a init`     | Register note models in Anki. Run once before your first sync. |
+| `m2a sync`     | Import media and notes, then trigger an AnkiWeb sync.          |
+| `m2a sync_web` | Trigger an AnkiWeb sync only (no re-import). Useful for cron.  |
 
 Only files modified within the last `TIME_RANGE` seconds (default 2 hours) are processed.
 
 > **Force a full sync** — to re-sync all notes regardless of modification time, touch every Markdown file first:
+>
 > ```shell
 > find ~/notes/anki -name "*.md" -exec touch {} +
 > m2a --folder ~/notes/anki sync
@@ -203,7 +204,7 @@ fields:
   - Definition
   - Example
 is_cloze: false
-css_file: styles/my-vocab.css      # relative to my-resources/
+css_file: styles/my-vocab.css # relative to my-resources/
 templates:
   - name: word-to-definition
     front_file: templates/my-vocab/front.html
@@ -247,11 +248,6 @@ A common English greeting.
 ```
 
 Run `m2a --resources my-resources/ init` once to register your custom models in Anki, then use `m2a --resources my-resources/ sync` as usual.
-
-## Limitation
-
-- DO NOT use dark theme in Anki — the rendered Markdown style does not support it.
-- Attachments (images, audio) must be placed in the same directory as the Markdown file, or a subdirectory of it.
 
 ## Cronjob
 
