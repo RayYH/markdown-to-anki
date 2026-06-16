@@ -4,6 +4,9 @@
 [![Python versions](https://img.shields.io/pypi/pyversions/markdown-to-anki)](https://pypi.org/project/markdown-to-anki/)
 [![Release](https://github.com/rayyh/markdown-to-anki/actions/workflows/release.yml/badge.svg)](https://github.com/rayyh/markdown-to-anki/actions/workflows/release.yml)
 
+> [!CAUTION]
+> This software is provided "as is", without warranty of any kind. The author is not responsible for any consequences of its use, including but not limited to data loss, corrupted Anki collections, or unintended modifications to your notes. **Back up your Anki collection before syncing. Use at your own risk.**
+
 **markdown-to-anki** is a lightweight Python CLI that automatically converts **raw Markdown files into Anki cards** using [AnkiConnect](https://foosoft.net/projects/anki-connect/). It's designed for learners and note-takers who prefer writing in Markdown and want to seamlessly sync their content into Anki.
 
 ## Installation
