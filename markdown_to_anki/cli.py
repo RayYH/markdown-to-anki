@@ -78,6 +78,11 @@ def sync(ctx):
     """Import media and notes, then trigger an AnkiWeb sync."""
     md_folder = _ctx_get(ctx, "MD_FOLDER")
     anki_url = _ctx_get(ctx, "ANKI_URL")
+    try:
+        _make_api(anki_url).version()
+    except Exception:
+        click.secho("Connection Refused", fg="red")
+        return
     click.echo("import medias")
     click.echo(import_medias(md_folder=md_folder, anki_url=anki_url))
     click.echo("import notes")
