@@ -37,8 +37,7 @@ def extract_card_tags(section: str):
 def markdown_metadata(content: str):
     md = Markdown(extensions=["meta"])
     md.convert(content)
-    # noinspection all
-    meta = md.Meta
+    meta = getattr(md, "Meta", {})
     result = {}
     for key in meta:
         items = meta[key]
@@ -51,7 +50,7 @@ def markdown_metadata(content: str):
     return result
 
 
-def markdown_to_html(content: str, base_path: str = None) -> str:
+def markdown_to_html(content: str, base_path: str | None = None) -> str:
     html = (
         markdown(
             content,
@@ -86,7 +85,7 @@ def markdown_to_html(content: str, base_path: str = None) -> str:
         base_dir = os.path.dirname(base_path) if base_path else None
         soup = BeautifulSoup(html, "html.parser")
         for img in soup.find_all("img"):
-            src = img.get("src", "")
+            src = str(img.get("src") or "")
             if (
                 not src
                 or src.startswith("http://")

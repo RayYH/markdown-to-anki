@@ -120,12 +120,12 @@ class AnkiApi:
         self,
         deck_name: str,
         model_name: str,
-        fields: Dict = None,
-        options: Dict = None,
-        tags: List = None,
-        audio: List = None,
-        video: List = None,
-        picture: List = None,
+        fields: Dict | None = None,
+        options: Dict | None = None,
+        tags: List | None = None,
+        audio: List | None = None,
+        video: List | None = None,
+        picture: List | None = None,
     ):
         note = {
             "deckName": deck_name,
@@ -142,10 +142,10 @@ class AnkiApi:
     def update_note_fields(
         self,
         anki_id: int,
-        fields: Dict = None,
-        audio: List = None,
-        video: List = None,
-        picture: List = None,
+        fields: Dict | None = None,
+        audio: List | None = None,
+        video: List | None = None,
+        picture: List | None = None,
     ):
         note = {
             "id": anki_id,

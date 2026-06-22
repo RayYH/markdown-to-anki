@@ -63,19 +63,13 @@ def import_notes(md_folder: str | None = None, anki_url: str | None = None):
                 skip = metadata.get("skip") if metadata.get("skip") else 0
                 if skip:
                     continue
-                dn = (
-                    metadata.get("deck")[0]
-                    if metadata.get("deck")
-                    else DEFAULT_DECK
-                )
+                _deck = metadata.get("deck")
+                dn = _deck[0] if _deck else DEFAULT_DECK
                 if dn not in deck_names:
                     anki_api.create_deck(deck=dn)
                 tags = metadata.get("tags") if metadata.get("tags") else []
-                mn = (
-                    metadata.get("model")[0]
-                    if metadata.get("model")
-                    else DEFAULT_MODEL
-                )
+                _model = metadata.get("model")
+                mn = _model[0] if _model else DEFAULT_MODEL
                 md = model_definition(mn)
                 in_fields = (md.get("inOrderFields") if md else None) or []
                 parts = split_multi_parts(content)
