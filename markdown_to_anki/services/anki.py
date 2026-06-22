@@ -47,6 +47,7 @@ def import_notes(md_folder: str | None = None, anki_url: str | None = None):
     deck_names = anki_api.deck_names()
     updated_count = 0
     created_count = 0
+    skipped_count = 0
     for root, dirs, files in os.walk(folder):
         for file in files:
             if file.lower().endswith(".md") or file.lower().endswith(
@@ -104,15 +105,27 @@ def import_notes(md_folder: str | None = None, anki_url: str | None = None):
                         anki_api.update_note_fields(anki_id, fields=fields)
                         updated_count += 1
                     else:
-                        anki_id = anki_api.add_note(
-                            deck_name=dn,
-                            model_name=mn,
-                            fields=fields,
-                            tags=merged_tags,
-                        )
-                        set_anki_id(fullpath, idx, anki_id)
-                        created_count += 1
-    return {"notes created": created_count, "notes updated": updated_count}
+                        try:
+                            anki_id = anki_api.add_note(
+                                deck_name=dn,
+                                model_name=mn,
+                                fields=fields,
+                                tags=merged_tags,
+                            )
+                            set_anki_id(fullpath, idx, anki_id)
+                            created_count += 1
+                        except Exception as e:
+                            if "duplicate" not in str(e).lower():
+                                raise
+                            print(
+                                f"Skipped duplicate: {fullpath} card {idx}"
+                            )
+                            skipped_count += 1
+    return {
+        "notes created": created_count,
+        "notes updated": updated_count,
+        "notes skipped (duplicate)": skipped_count,
+    }
 
 
 MEDIA_EXTENSIONS = {
